@@ -1,38 +1,33 @@
 "use client";
 
-import { toast } from "sonner"; 
-import { addToCart } from "../../../cartActions/addToCart.action";
-import { FaCirclePlus } from "react-icons/fa6";
+import { useSession } from "next-auth/react";
+import { addToCart } from "../../../cartActions/addToCart.action"; 
+import { toast } from "sonner";
 
-export default function MyAddToCart({ id }: { id: string }) {
+export default function MyAddToCart({ productId }: { productId: string }) {
+  const { data: session } = useSession();
 
-  async function addItemToCart(productId: string) {
-    try {
-      const res = await addToCart(productId);
+  const handleAdd = async () => {
+    const userToken = (session as any)?.token || (session as any)?.user?.token;
 
-      
-      if (res?.status === "success" || res?.status === "message" || res?.message) {
-        toast.success(res?.message ||"add product to cart succsses", {
-          duration: 2000,
-        });
-      } else {
-        toast.error("you cant add product now to card", {
-          duration: 2000,
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("An error occurred while adding");
+    if (!userToken) {
+      toast.error("Please log in first");
+      return;
     }
-  }
+
+  
+    const res = await addToCart(productId, userToken);
+    
+    if (res?.status === "success" || res?.message === "success") {
+      toast.success("Added to cart successfully!");
+    } else {
+      toast.error(res?.message || "Failed to add to cart");
+    }
+  };
 
   return (
-    <button 
-      type="button" 
-      onClick={() => addItemToCart(id)}
-      aria-label="Add to cart"
-    >
-      <FaCirclePlus className="text-3xl text-green-900 cursor-pointer hover:text-green-700 transition-colors" />
+    <button onClick={handleAdd} className="bg-emerald-700 text-white px-4 py-2 rounded-lg">
+      Add To Cart
     </button>
   );
 }

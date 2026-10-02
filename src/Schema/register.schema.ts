@@ -31,4 +31,4 @@ export const registerSchema = zod
   .refine((obj) => obj.password === obj.rePassword, {
     message: "Password and Confirm Password do not match",
     path: ["rePassword"],
-  });حح
+  });
