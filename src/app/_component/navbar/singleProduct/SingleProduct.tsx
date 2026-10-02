@@ -131,7 +131,7 @@ export default function SingleProduct({ product }: { product: any }) {
         </div>
 
         <div onClick={(e) => e.stopPropagation()}>
-         <MyAddToCart productId={productId} />
+          <MyAddToCart productId={productId} />
         </div>
       </div>
     </div>
